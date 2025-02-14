@@ -1,9 +1,7 @@
 from flet import (
     CupertinoRadio as FletRadio,
     ThemeMode,
-    Row,
-    FontWeight,
-    TextStyle,
+    Row
 )
 from dataclasses import dataclass
 
