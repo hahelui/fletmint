@@ -1,21 +1,17 @@
 from flet import (
     ThemeMode,
-    UserControl,
     Container,
     Row,
-    Column,
     Text,
     Icon,
     icons,
     FontWeight,
     border,
-    alignment,
+    MainAxisAlignment,
     animation,
     transform,
-    MainAxisAlignment,
 )
 from dataclasses import dataclass
-
 
 @dataclass
 class CheckBoxColors:
@@ -55,8 +51,7 @@ class CheckBoxColors:
             disabled_outer_border_color="#dfe7fb",
         )
 
-
-class CheckBox(UserControl):
+class CheckBox(Row):
     CHECK_ICON_SIZE = 15
 
     def __init__(
@@ -72,9 +67,12 @@ class CheckBox(UserControl):
         on_click=None,
         disabled: bool = False,
         theme: ThemeMode | str = ThemeMode.DARK,
-        alignment=MainAxisAlignment.START,
+        alignment: MainAxisAlignment = MainAxisAlignment.START,
     ):
-        super().__init__()
+        super().__init__(
+            expand=False,
+            alignment=alignment,
+        )
         self.color = color
         self.label = label
         self.size = size
@@ -91,17 +89,10 @@ class CheckBox(UserControl):
         self._build_ui()
 
     def _build_ui(self):
-        self.check_box = self._create_checkbox_container(self.checked, self.disabled)
-        self.container = Container(
-            on_click=self._toggle_check if not self.disabled else None,
-            content=Row(
-                controls=[self.check_box],
-                alignment=self.alignment,
-                expand=False,
-            ),
-        )
+        self.check_box = self._create_checkbox_container(self.checked, self.disabled, self._toggle_check if not self.disabled else None)
+        self.controls = [self.check_box]
         if self.label != "":
-            self.container.content.controls.append(
+            self.controls.append(
                 Text(
                     self.label,
                     font_family="Poppins",
@@ -110,7 +101,7 @@ class CheckBox(UserControl):
                 )
             )
 
-    def _create_checkbox_container(self, checked: bool, disabled: bool):
+    def _create_checkbox_container(self, checked: bool, disabled: bool, on_click=None):
         if disabled:
             bg_color = self.colors.disabled_background_color
             border_color = self.colors.disabled_border_color
@@ -140,6 +131,7 @@ class CheckBox(UserControl):
             bgcolor=bg_color,
             border=border.all(color=border_color, width=self.stroke_width),
             content=content,
+            on_click=on_click,
         )
 
     def _toggle_check(self, e):
@@ -178,6 +170,3 @@ class CheckBox(UserControl):
 
     def is_checked(self):
         return self.checked
-
-    def build(self):
-        return self.container

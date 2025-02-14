@@ -9,3 +9,9 @@
 /single.py
 /requirements.txt
 /description.md
+__pycache__
+
+#uv files
+.python-version
+pyproject.toml
+uv.lock
